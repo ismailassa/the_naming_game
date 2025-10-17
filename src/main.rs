@@ -18,6 +18,11 @@ fn main() {
     agents.get_mut(1).unwrap().role = Role::Listener;
     println!("Context selected (object IDs): {:?}", context);
     println!("Agents selected: {:?}", agents);
+
+    let mut rng = rand::rng();
+    let random_index = rng.random_range(0..context_size);
+    let topic_object = context[random_index];
+    println!("Topic selected: {:?}", topic_object);
 }
 
 fn get_random_elements<T: Clone + PartialEq>(elements: &Vec<T>, amount: usize) -> Vec<T> {
