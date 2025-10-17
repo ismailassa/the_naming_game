@@ -1,5 +1,5 @@
 mod game_properties;
-use crate::game_properties::utils::{Population, World};
+use crate::game_properties::utils::{Agent, Population, Role, World};
 use rand::Rng;
 
 fn main() {
@@ -13,8 +13,11 @@ fn main() {
     // Context selection, consists of 5 objects
     let context_size: usize = 5;
     let context: Vec<u32> = get_random_elements(&world.objects, context_size);
-
+    let mut agents: Vec<Agent> = get_random_elements(&population.population, 2);
+    agents.get_mut(0).unwrap().role = Role::Speaker;
+    agents.get_mut(1).unwrap().role = Role::Listener;
     println!("Context selected (object IDs): {:?}", context);
+    println!("Agents selected: {:?}", agents);
 }
 
 fn get_random_elements<T: Clone + PartialEq>(elements: &Vec<T>, amount: usize) -> Vec<T> {

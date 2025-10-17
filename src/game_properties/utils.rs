@@ -20,8 +20,9 @@ pub struct Population {
 impl Population {
     pub fn new(size: u32) -> Self {
         let mut population: Vec<Agent> = Vec::new();
-        for _ in (0..size) {
-            let value = Agent {
+        for index in (0..size) {
+            let mut value = Agent {
+                name: format!("agent_{}", index),
                 vocabulary: Vocabulary { words: vec![] },
                 role: Role::None,
             };
@@ -31,27 +32,27 @@ impl Population {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Agent {
+    pub name: String,
     pub vocabulary: Vocabulary,
     pub role: Role,
 }
+impl Agent {}
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Role {
     None = -1,
     Speaker = 0,
     Listener = 1,
 }
 
-impl Agent {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Vocabulary {
     pub words: Vec<Word>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Word {
     pub object: u32,
     pub text: String,
