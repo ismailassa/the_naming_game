@@ -1,36 +1,43 @@
+#[derive(Debug)]
 pub struct World {
     pub objects: Vec<u32>,
 }
 
 impl World {
     // I used the numbers as object identifiers for simplicity
-    pub fn new(&mut self, size: u32) {
-        self.objects = (0..size).collect::<Vec<u32>>();
+    pub fn new(size: u32) -> Self {
+        World {
+            objects: (0..size).collect(),
+        }
     }
 }
 
+#[derive(Debug)]
 pub struct Population {
     pub population: Vec<Agent>,
 }
 
 impl Population {
-    pub fn new(&mut self, size: u32) {
-        // self.population = (0..size)
+    pub fn new(size: u32) -> Self {
+        let mut population: Vec<Agent> = Vec::new();
         for _ in (0..size) {
             let value = Agent {
                 vocabulary: Vocabulary { words: vec![] },
                 role: Role::None,
             };
-            self.population.push(value);
+            population.push(value);
         }
+        return Population { population };
     }
 }
 
+#[derive(Debug)]
 pub struct Agent {
     pub vocabulary: Vocabulary,
     pub role: Role,
 }
 
+#[derive(Debug)]
 pub enum Role {
     None = -1,
     Speaker = 0,
@@ -39,10 +46,12 @@ pub enum Role {
 
 impl Agent {}
 
+#[derive(Debug)]
 pub struct Vocabulary {
     pub words: Vec<Word>,
 }
 
+#[derive(Debug)]
 pub struct Word {
     pub object: u32,
     pub text: String,
