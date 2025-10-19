@@ -1,3 +1,5 @@
+use std::ops::Index;
+
 use fake::Fake;
 use fake::faker::lorem::en::*;
 
@@ -43,7 +45,7 @@ pub struct Agent<T: PartialEq> {
 }
 
 impl<T: Clone + PartialEq> Agent<T> {
-    pub fn create_word(&mut self, object: &T) -> Word<T> {
+    pub fn create_word(&mut self, object: &T, score: f32) -> Word<T> {
         let fake_word: String = Word().fake();
 
         println!("Generated fake word: {}", fake_word);
@@ -51,7 +53,7 @@ impl<T: Clone + PartialEq> Agent<T> {
         let word = Word {
             object: object.clone(),
             text: String::from(fake_word),
-            score: 0.5,
+            score: score,
         };
         self.vocabulary.words.push(word.clone());
 
@@ -65,6 +67,25 @@ impl<T: Clone + PartialEq> Agent<T> {
             }
         }
         false
+    }
+
+    pub fn get_common_word(&self, object: &T) -> Option<Word<T>> {
+        let mut common_word: Option<Word<T>> = None;
+
+        for word in &self.vocabulary.words {
+            if &word.object == object {
+                if common_word.is_none() {
+                    common_word = Some(word.clone());
+                    continue;
+                };
+
+                if word.score > common_word.as_ref().unwrap().score {
+                    common_word = Some(word.clone());
+                }
+            }
+        }
+
+        return common_word;
     }
 }
 

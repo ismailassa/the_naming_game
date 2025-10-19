@@ -24,7 +24,12 @@ fn main() {
     let topic_object = context[random_index];
     println!("Topic selected: {:?}", topic_object);
 
-    agents.get_mut(0).unwrap().create_word(&topic_object);
+    agents.get_mut(0).unwrap().create_word(&topic_object, 0.4);
+
+    agents.get_mut(0).unwrap().create_word(&topic_object, 0.6);
+
+    let common_word = agents.get(0).unwrap().get_common_word(&topic_object);
+    println!("Common word found: {:?}", common_word);
 }
 
 fn get_random_elements<T: Clone + PartialEq>(elements: &Vec<T>, amount: usize) -> Vec<T> {
