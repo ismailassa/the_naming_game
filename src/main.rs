@@ -10,7 +10,10 @@ fn main() {
     // Context selection, consists of 5 objects
     let context_size: usize = 5;
 
-    for _ in 0..100 {
+    let amount_of_games = 5000;
+    let mut amount_of_successes = 0;
+
+    for _ in 0..amount_of_games {
         let context: Vec<u32> = get_random_elements(&world.objects, context_size);
         let agent_indices: Vec<usize> = get_random_indices(population.population.len(), 2);
         let speaker_idx = agent_indices[0];
@@ -51,6 +54,7 @@ fn main() {
             // in case topic and pointing.text match
             let pointing_word = pointing_object.unwrap();
             println!("Communication successful!");
+            amount_of_successes += 1;
             population.population[speaker_idx]
                 .update_score_sucessfull(&topic_object, pointing_word.clone());
             population.population[listener_idx]
@@ -71,6 +75,7 @@ fn main() {
 
     println!("Agent states after the interaction:");
     println!("Populations: {:?}", population);
+    println!("Success rate: {}", amount_of_successes);
 }
 
 fn get_random_indices(max: usize, amount: usize) -> Vec<usize> {
