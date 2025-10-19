@@ -24,33 +24,43 @@ fn main() {
     let topic_object = context[random_index];
     println!("Topic selected: {:?}", topic_object);
 
-    // Checks if agent speaker has a vocab for topic
+    // 4. production
     let mut common_word = agents.get(0).unwrap().get_common_word(&topic_object);
     if common_word.is_none() {
-        // It creates one if it doesn't have
+        // 4a. invention
         common_word = Some(agents.get_mut(0).unwrap().create_word(&topic_object));
+        agents[0].add_word(common_word.clone().unwrap());
+    }
+    let utter = common_word.clone().unwrap().text;
+    println!("Utterance by agent 1: {:?}", utter);
+
+    // 5. comprehension
+    let pointing_object = agents.get(1).unwrap().get_word_by_text(&utter);
+    println!("Pointing by agent 2: {:?}", pointing_object);
+
+    if pointing_object.is_none() {
+        println!("Agent 2 does not know the word '{}'", utter);
+        println!("Communication failed!");
+        return;
     }
 
-    let utter = common_word.clone().unwrap().text;
-
-    agents[1].add_word(common_word.clone().unwrap());
-
-    let pointing = agents.get(1).unwrap().get_word_by_text(&utter);
-    println!("Utterance: {:?}", utter);
-    println!("Pointing result: {:?}", pointing);
-
     // Now calculate the success!
-    if pointing.is_some() && pointing.as_ref().unwrap().object == topic_object {
+    if pointing_object.is_some() && pointing_object.as_ref().unwrap().object == topic_object {
         // in case topic and pointing.text match
-        let pointing_word = pointing.unwrap();
+        let pointing_word = pointing_object.unwrap();
         println!("Communication successful!");
         agents[0].update_score_sucessfull(&topic_object, pointing_word.clone());
         agents[1].update_score_sucessfull(&topic_object, pointing_word.clone());
     } else {
-        let pointing_word = pointing.unwrap();
-        println!("Communication failed!");
+        let pointing_word = pointing_object.unwrap();
+        println!(
+            "Communication failed! Miss pointed to object {:?} but was {:?}",
+            pointing_word.object,
+            common_word.clone().unwrap().object
+        );
         agents[0].update_score_failed_speaker(&topic_object, pointing_word.clone());
         agents[1].update_score_failed_listener(&utter);
+        agents[1].add_word(common_word.unwrap());
     }
 }
 
