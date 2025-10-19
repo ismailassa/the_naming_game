@@ -1,7 +1,7 @@
 use std::ops::Index;
 
-use fake::Fake;
 use fake::faker::lorem::en::*;
+use fake::{Fake, Opt};
 
 #[derive(Debug)]
 pub struct World {
@@ -45,7 +45,7 @@ pub struct Agent<T: PartialEq> {
 }
 
 impl<T: Clone + PartialEq> Agent<T> {
-    pub fn create_word(&mut self, object: &T, score: f32) -> Word<T> {
+    pub fn create_word(&mut self, object: &T) -> Word<T> {
         let fake_word: String = Word().fake();
 
         println!("Generated fake word: {}", fake_word);
@@ -53,11 +53,15 @@ impl<T: Clone + PartialEq> Agent<T> {
         let word = Word {
             object: object.clone(),
             text: String::from(fake_word),
-            score: score,
+            score: 0.5,
         };
         self.vocabulary.words.push(word.clone());
 
         word
+    }
+
+    pub fn add_word(&mut self, word: Word<T>) {
+        self.vocabulary.words.push(word);
     }
 
     pub fn has_word_for_object(&self, object: &T) -> bool {
@@ -67,6 +71,24 @@ impl<T: Clone + PartialEq> Agent<T> {
             }
         }
         false
+    }
+
+    pub fn get_word_by_text(&self, form: &String) -> Option<Word<T>> {
+        let mut referred_word: Option<Word<T>> = None;
+
+        for word in &self.vocabulary.words {
+            if &word.text == form {
+                if referred_word.is_none() {
+                    referred_word = Some(word.clone());
+                    continue;
+                }
+
+                if word.score > referred_word.clone().unwrap().score {
+                    referred_word = Some(word.clone());
+                }
+            }
+        }
+        referred_word
     }
 
     pub fn get_common_word(&self, object: &T) -> Option<Word<T>> {

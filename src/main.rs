@@ -24,12 +24,20 @@ fn main() {
     let topic_object = context[random_index];
     println!("Topic selected: {:?}", topic_object);
 
-    agents.get_mut(0).unwrap().create_word(&topic_object, 0.4);
+    // Checks if agent speaker has a vocab for topic
+    let mut common_word = agents.get(0).unwrap().get_common_word(&topic_object);
+    if common_word.is_none() {
+        // It creates one if it doesn't have
+        common_word = Some(agents.get_mut(0).unwrap().create_word(&topic_object));
+    }
 
-    agents.get_mut(0).unwrap().create_word(&topic_object, 0.6);
+    let utter = common_word.clone().unwrap().text;
 
-    let common_word = agents.get(0).unwrap().get_common_word(&topic_object);
-    println!("Common word found: {:?}", common_word);
+    agents[1].add_word(common_word.clone().unwrap());
+
+    let pointing = agents.get(1).unwrap().get_word_by_text(&utter);
+    println!("Utterance: {:?}", utter);
+    println!("Pointing result: {:?}", pointing);
 }
 
 fn get_random_elements<T: Clone + PartialEq>(elements: &Vec<T>, amount: usize) -> Vec<T> {
