@@ -91,6 +91,35 @@ impl<T: Clone + PartialEq> Agent<T> {
         referred_word
     }
 
+    pub fn update_score_sucessfull(&mut self, topic: &T, pointing: Word<T>) {
+        for word in &mut self.vocabulary.words {
+            if &word.object == topic && &word.text == &pointing.text {
+                // increase score
+                word.score = 0.5 + (1.0 - word.score) * word.score;
+            } else {
+                word.score = 0.5 - (1.0 - word.score) * word.score;
+            }
+        }
+    }
+
+    pub fn update_score_failed_speaker(&mut self, topic: &T, pointing: Word<T>) {
+        for word in &mut self.vocabulary.words {
+            if &word.object == topic && &word.text == &pointing.text {
+                // increase score
+                word.score = 0.5 - (1.0 - word.score) * word.score;
+            }
+        }
+    }
+
+    pub fn update_score_failed_listener(&mut self, fomat: &String) {
+        for word in &mut self.vocabulary.words {
+            if &word.text == fomat {
+                // increase score
+                word.score = 0.5 - (1.0 - word.score) * word.score;
+            }
+        }
+    }
+
     pub fn get_common_word(&self, object: &T) -> Option<Word<T>> {
         let mut common_word: Option<Word<T>> = None;
 

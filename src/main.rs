@@ -38,6 +38,20 @@ fn main() {
     let pointing = agents.get(1).unwrap().get_word_by_text(&utter);
     println!("Utterance: {:?}", utter);
     println!("Pointing result: {:?}", pointing);
+
+    // Now calculate the success!
+    if pointing.is_some() && pointing.as_ref().unwrap().object == topic_object {
+        // in case topic and pointing.text match
+        let pointing_word = pointing.unwrap();
+        println!("Communication successful!");
+        agents[0].update_score_sucessfull(&topic_object, pointing_word.clone());
+        agents[1].update_score_sucessfull(&topic_object, pointing_word.clone());
+    } else {
+        let pointing_word = pointing.unwrap();
+        println!("Communication failed!");
+        agents[0].update_score_failed_speaker(&topic_object, pointing_word.clone());
+        agents[1].update_score_failed_listener(&utter);
+    }
 }
 
 fn get_random_elements<T: Clone + PartialEq>(elements: &Vec<T>, amount: usize) -> Vec<T> {
