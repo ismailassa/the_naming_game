@@ -16,11 +16,11 @@ impl World {
 }
 
 #[derive(Debug)]
-pub struct Population<T> {
+pub struct Population<T: Clone + PartialEq> {
     pub population: Vec<Agent<T>>,
 }
 
-impl<T> Population<T> {
+impl<T: Clone + PartialEq> Population<T> {
     pub fn new(size: u32) -> Self {
         let mut population: Vec<Agent<T>> = Vec::new();
         for index in 0..size {
@@ -36,13 +36,13 @@ impl<T> Population<T> {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Agent<T> {
+pub struct Agent<T: PartialEq> {
     pub name: String,
     pub vocabulary: Vocabulary<T>,
     pub role: Role,
 }
 
-impl<T: Clone> Agent<T> {
+impl<T: Clone + PartialEq> Agent<T> {
     pub fn create_word(&mut self, object: &T) -> Word<T> {
         let fake_word: String = Word().fake();
 
@@ -57,6 +57,15 @@ impl<T: Clone> Agent<T> {
 
         word
     }
+
+    pub fn has_word_for_object(&self, object: &T) -> bool {
+        for word in &self.vocabulary.words {
+            if (&word.object == object) {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -67,12 +76,12 @@ pub enum Role {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Vocabulary<T> {
+pub struct Vocabulary<T: PartialEq> {
     pub words: Vec<Word<T>>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Word<T> {
+pub struct Word<T: PartialEq> {
     pub object: T,
     pub text: String,
     pub score: f32,
