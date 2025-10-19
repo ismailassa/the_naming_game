@@ -13,7 +13,7 @@ fn main() {
     // Context selection, consists of 5 objects
     let context_size: usize = 5;
     let context: Vec<u32> = get_random_elements(&world.objects, context_size);
-    let mut agents: Vec<Agent> = get_random_elements(&population.population, 2);
+    let mut agents: Vec<Agent<usize>> = get_random_elements(&population.population, 2);
     agents.get_mut(0).unwrap().role = Role::Speaker;
     agents.get_mut(1).unwrap().role = Role::Listener;
     println!("Context selected (object IDs): {:?}", context);

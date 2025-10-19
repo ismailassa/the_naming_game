@@ -13,15 +13,15 @@ impl World {
 }
 
 #[derive(Debug)]
-pub struct Population {
-    pub population: Vec<Agent>,
+pub struct Population<T> {
+    pub population: Vec<Agent<T>>,
 }
 
-impl Population {
+impl<T> Population<T> {
     pub fn new(size: u32) -> Self {
-        let mut population: Vec<Agent> = Vec::new();
-        for index in (0..size) {
-            let mut value = Agent {
+        let mut population: Vec<Agent<T>> = Vec::new();
+        for index in 0..size {
+            let value = Agent {
                 name: format!("agent_{}", index),
                 vocabulary: Vocabulary { words: vec![] },
                 role: Role::None,
@@ -33,12 +33,20 @@ impl Population {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Agent {
+pub struct Agent<T> {
     pub name: String,
-    pub vocabulary: Vocabulary,
+    pub vocabulary: Vocabulary<T>,
     pub role: Role,
 }
-impl Agent {}
+impl<T: Clone> Agent<T> {
+    pub fn create_word(object: &T) -> Word<T> {
+        Word {
+            object: object.clone(),
+            text: String::from("word"),
+            score: 1.0,
+        }
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Role {
@@ -48,13 +56,13 @@ pub enum Role {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Vocabulary {
-    pub words: Vec<Word>,
+pub struct Vocabulary<T> {
+    pub words: Vec<Word<T>>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Word {
-    pub object: u32,
+pub struct Word<T> {
+    pub object: T,
     pub text: String,
     pub score: f32,
 }
