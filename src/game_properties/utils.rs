@@ -1,3 +1,6 @@
+use fake::Fake;
+use fake::faker::lorem::en::*;
+
 #[derive(Debug)]
 pub struct World {
     pub objects: Vec<u32>,
@@ -38,13 +41,21 @@ pub struct Agent<T> {
     pub vocabulary: Vocabulary<T>,
     pub role: Role,
 }
+
 impl<T: Clone> Agent<T> {
-    pub fn create_word(object: &T) -> Word<T> {
-        Word {
+    pub fn create_word(&mut self, object: &T) -> Word<T> {
+        let fake_word: String = Word().fake();
+
+        println!("Generated fake word: {}", fake_word);
+
+        let word = Word {
             object: object.clone(),
-            text: String::from("word"),
-            score: 1.0,
-        }
+            text: String::from(fake_word),
+            score: 0.5,
+        };
+        self.vocabulary.words.push(word.clone());
+
+        word
     }
 }
 
