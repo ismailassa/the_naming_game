@@ -1,7 +1,5 @@
-use std::ops::Index;
-
+use fake::Fake;
 use fake::faker::lorem::en::*;
-use fake::{Fake, Opt};
 
 #[derive(Debug)]
 pub struct World {
@@ -48,8 +46,6 @@ impl<T: Clone + PartialEq> Agent<T> {
     pub fn create_word(&mut self, object: &T) -> Word<T> {
         let fake_word: String = Word().fake();
 
-        println!("Generated fake word: {}", fake_word);
-
         let word = Word {
             object: object.clone(),
             text: String::from(fake_word),
@@ -64,14 +60,14 @@ impl<T: Clone + PartialEq> Agent<T> {
         self.vocabulary.words.push(word);
     }
 
-    pub fn has_word_for_object(&self, object: &T) -> bool {
-        for word in &self.vocabulary.words {
-            if (&word.object == object) {
-                return true;
-            }
-        }
-        false
-    }
+    // pub fn has_word_for_object(&self, object: &T) -> bool {
+    //     for word in &self.vocabulary.words {
+    //         if (&word.object == object) {
+    //             return true;
+    //         }
+    //     }
+    //     false
+    // }
 
     pub fn get_word_by_text(&self, form: &String) -> Option<Word<T>> {
         let mut referred_word: Option<Word<T>> = None;
